@@ -11,6 +11,10 @@ Download do zip o clone do git
 
 git clone https://github.com/danilomde/Lara6Lte3StarterKit.git
 
+cd Lara6Lte3StarterKit
+
+cp .env.example .env
+
 php artisan key:generate
 
 composer update
@@ -23,8 +27,8 @@ php artisan serve
 
 
 
- # admin@admin.com - 123
- # user@user.com   - 123
+ # admin@admin.com - 123456
+ # user@user.com   - 123456
 
 
 
