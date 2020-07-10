@@ -3,7 +3,7 @@
 namespace JeroenNoten\LaravelAdminLte\Console;
 
 use Illuminate\Console\Command;
-use JeroenNoten\LaravelAdminLte\Http\Helpers\CommandHelper;
+use JeroenNoten\LaravelAdminLte\Helpers\CommandHelper;
 
 class AdminLtePluginCommand extends Command
 {
@@ -25,10 +25,20 @@ class AdminLtePluginCommand extends Command
             'package_path' => 'bootstrap-slider',
             'assets_path' => 'bootstrap-slider',
         ],
+        'bootstrapSwitch' => [
+            'name' => 'Bootstrap Switch',
+            'package_path' => 'bootstrap-switch',
+            'assets_path' => 'bootstrap-switch',
+        ],
         'bootstrap4Duallistbox' => [
             'name' => 'Bootstrap4 Duallistbox',
             'package_path' => 'bootstrap4-duallistbox',
             'assets_path' => 'bootstrap4-duallistbox',
+        ],
+        'bsCustomFileInput' => [
+            'name' => 'bs-custom-file-input',
+            'package_path' => 'bs-custom-file-input',
+            'assets_path' => 'bs-custom-file-input',
         ],
         'chartJs' => [
             'name' => 'Chart.js',
@@ -104,7 +114,7 @@ class AdminLtePluginCommand extends Command
             'name' => 'Filterizr',
             'package_path' => 'filterizr',
             'assets_path' => 'filterizr',
-            'ignore_ending' => '*.d.ts',
+            'ignore' => ['*.d.ts'],
             'recursive' => false,
         ],
         'flagIconCss' => [
@@ -121,9 +131,7 @@ class AdminLtePluginCommand extends Command
             'name' => 'Fullcalendar',
             'package_path' => 'fullcalendar',
             'assets_path' => 'fullcalendar',
-            'ignore_ending' => [
-                '*.d.ts', '*.json', '*.md',
-            ],
+            'ignore' => ['*.d.ts', '*.json', '*.md'],
         ],
         'fullcalendarPlugins' => [
             'name' => 'Fullcalendar Plugins',
@@ -139,17 +147,13 @@ class AdminLtePluginCommand extends Command
                 'fullcalendar-plugins/interaction',
                 'fullcalendar-plugins/timegrid',
             ],
-            'ignore_ending' => [
-                '*.d.ts', '*.json', '*.md',
-            ],
+            'ignore' => ['*.d.ts', '*.json', '*.md'],
         ],
         'icheckBootstrap' => [
             'name' => 'iCheck Bootstrap',
             'package_path' => 'icheck-bootstrap',
             'assets_path' => 'icheck-bootstrap',
-            'ignore_ending' => [
-                '*.json', '*.md',
-            ],
+            'ignore' => ['*.json', '*.md'],
         ],
         'inputmask' => [
             'name' => 'InputMask',
@@ -160,9 +164,7 @@ class AdminLtePluginCommand extends Command
             'name' => 'ion RangeSlider',
             'package_path' => 'ion-rangeslider',
             'assets_path' => 'ion-rangeslider',
-            'ignore_ending' => [
-                '*.json', '*.md', '.editorconfig',
-            ],
+            'ignore' => ['*.json', '*.md', '.editorconfig'],
         ],
         'jqueryKnob' => [
             'name' => 'jQuery Knob',
@@ -181,9 +183,7 @@ class AdminLtePluginCommand extends Command
                 'raphael',
                 'jquery-mousewheel',
             ],
-            'ignore_ending' => [
-                '*.json', '*.md', '.editorconfig',
-            ],
+            'ignore' => ['*.json', '*.md', '.editorconfig'],
         ],
         'jqueryUi' => [
             'name' => 'jQuery UI',
@@ -196,9 +196,12 @@ class AdminLtePluginCommand extends Command
                 'jquery-ui/images',
             ],
             'recursive' => false,
-            'ignore_ending' => [
-                '*.json', '*.md', '*.html', '.editorconfig',
-            ],
+            'ignore' => ['*.json', '*.md', '*.html', '.editorconfig'],
+        ],
+        'jqueryValidation' => [
+            'name' => 'jQuery Validation',
+            'package_path' => 'jquery-validation',
+            'assets_path' => 'jquery-validation',
         ],
         'jqvmap' => [
             'name' => 'jQVMap',
@@ -232,9 +235,7 @@ class AdminLtePluginCommand extends Command
                 'select2',
                 'select2-bootstrap4-theme',
             ],
-            'ignore_ending' => [
-                '*.json', '*.md',
-            ],
+            'ignore' => ['*.json', '*.md'],
         ],
         'sparklines' => [
             'name' => 'Sparklines',
@@ -361,7 +362,6 @@ class AdminLtePluginCommand extends Command
         $plugin_package_path = $this->plugins[$plugin_key]['package_path'];
         $plugin_assets_path = $this->plugins[$plugin_key]['assets_path'];
         $plugin_ignore = $this->plugins[$plugin_key]['ignore'] ?? [];
-        $plugin_ignore_ending = $this->plugins[$plugin_key]['ignore_ending'] ?? [];
         $plugin_recursive = $this->plugins[$plugin_key]['recursive'] ?? true;
 
         if (is_array($plugin_assets_path)) {
@@ -370,7 +370,12 @@ class AdminLtePluginCommand extends Command
                     $plugin_exist = false;
                     $plugin_child_exist = false;
                 } else {
-                    $compare = CommandHelper::compareDirectories($plugin_base_path.$plugin_package_path[$key], $plugin_public_path.$assets_path, '', $plugin_ignore, $plugin_ignore_ending, $plugin_recursive);
+                    $compare = CommandHelper::compareDirectories(
+                        $plugin_base_path.$plugin_package_path[$key],
+                        $plugin_public_path.$assets_path,
+                        $plugin_recursive,
+                        $plugin_ignore
+                    );
 
                     if (! $plugin_child_missmatch && $compare) {
                         $plugin_child_missmatch = false;
@@ -383,7 +388,13 @@ class AdminLtePluginCommand extends Command
             if (! file_exists($plugin_public_path.$plugin_assets_path)) {
                 $plugin_exist = false;
             } else {
-                if (! $compare = CommandHelper::compareDirectories($plugin_base_path.$plugin_package_path, $plugin_public_path.$plugin_assets_path, '', $plugin_ignore, $plugin_ignore_ending, $plugin_recursive)) {
+                $compare = CommandHelper::compareDirectories(
+                    $plugin_base_path.$plugin_package_path,
+                    $plugin_public_path.$plugin_assets_path,
+                    $plugin_recursive,
+                    $plugin_ignore
+                );
+                if (! (bool) $compare) {
                     $plugin_missmatch = true;
                 }
             }
@@ -438,10 +449,22 @@ class AdminLtePluginCommand extends Command
             if (is_array($plugin['package_path'])) {
                 foreach ($plugin['package_path'] as $key => $plugin_package_path) {
                     $plugin_assets_path = $plugin['assets_path'][$key];
-                    CommandHelper::directoryCopy(base_path($this->package_path).'plugins/'.$plugin_package_path, public_path($this->assets_path).$plugin_assets_path, $force, ($plugin['recursive'] ?? true), ($plugin['ignore'] ?? []), ($plugin['ignore_ending'] ?? null));
+                    CommandHelper::copyDirectory(
+                        base_path($this->package_path).'plugins/'.$plugin_package_path,
+                        public_path($this->assets_path).$plugin_assets_path,
+                        $force,
+                        ($plugin['recursive'] ?? true),
+                        ($plugin['ignore'] ?? [])
+                    );
                 }
             } else {
-                CommandHelper::directoryCopy(base_path($this->package_path).'plugins/'.$plugin['package_path'], public_path($this->assets_path).$plugin['assets_path'], $force, ($plugin['recursive'] ?? true), ($plugin['ignore'] ?? []), ($plugin['ignore_ending'] ?? null));
+                CommandHelper::copyDirectory(
+                    base_path($this->package_path).'plugins/'.$plugin['package_path'],
+                    public_path($this->assets_path).$plugin['assets_path'],
+                    $force,
+                    ($plugin['recursive'] ?? true),
+                    ($plugin['ignore'] ?? [])
+                );
             }
 
             $bar->advance();

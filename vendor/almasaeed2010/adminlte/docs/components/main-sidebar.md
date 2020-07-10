@@ -112,10 +112,12 @@ You can add this code above user-panel or nav-sidebar:
 - `.nav-child-indent` Child indent
 - `.nav-compact` Compact nav items
 - `.nav-flat` Flat nav style
+- `.nav-legacy` Legacy v2 nav style
+- `.nav-collapse-hide-child` Hide nav item submenus on collapsed sidebar
 
 
 > ##### Tip!
 > You can also use `.text-sm` on `.nav-sidebar` or `.brand-link` for smaller font.
 {: .quote-info}
 
-For more infromation about the JS part of the sidebar, please visit the [PushMenu plugin page]({% link javascript/push-menu.md %})
+For more information about the JS part of the sidebar, please visit the [PushMenu plugin page]({% link javascript/push-menu.md %})

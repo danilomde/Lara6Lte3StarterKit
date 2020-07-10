@@ -99,7 +99,8 @@
 
   &.user-block-sm {
     img {
-      @extend .img-sm;
+      width: $img-size-sm;
+      height: $img-size-sm;
     }
 
     .username,
@@ -122,29 +123,29 @@
 }
 
 .img-sm {
-  height: 30px !important;
-  width: 30px !important;
+  height: $img-size-sm;
+  width: $img-size-sm;
 
   + .img-push {
-    margin-left: 40px;
+    margin-left: $img-size-sm + $img-size-push;
   }
 }
 
 .img-md {
-  width: 60px;
-  height: 60px;
+  width: $img-size-md;
+  height: $img-size-md;
 
   + .img-push {
-    margin-left: 70px;
+    margin-left: $img-size-md + $img-size-push;
   }
 }
 
 .img-lg {
-  width: 100px;
-  height: 100px;
+  width: $img-size-lg;
+  height: $img-size-lg;
 
   + .img-push {
-    margin-left: 110px;
+    margin-left: $img-size-lg + $img-size-push;
   }
 }
 
@@ -282,6 +283,26 @@
       > .glyphicon,
       > .ion {
         color: $gray-400;
+      }
+    }
+  }
+}
+
+.tab-pane {
+  // Box overlay for LOADING STATE effect on Tab Panels
+  > .overlay-wrapper {
+    position: relative;
+    > .overlay {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      flex-direction: column;
+      margin-top: -$card-spacer-x;
+      margin-left: -$card-spacer-x;
+      height: calc(100% + 2 * #{$card-spacer-x});
+      width: calc(100% + 2 * #{$card-spacer-x});
+
+      &.dark {
+        color: $white;
       }
     }
   }
@@ -442,4 +463,17 @@ blockquote {
   margin-top: 0;
   margin-bottom: .5rem;
   padding-bottom: .5rem;
+}
+
+
+// Badge BTN Style
+.badge-btn {
+  border-radius: $button-border-radius-xs;
+  font-size: $button-font-size-xs;
+  font-weight: 400;
+  padding: $button-padding-y-xs*2 $button-padding-x-xs*2;
+}
+
+.badge-btn.badge-pill {
+  padding: .375rem .6rem;
 }

@@ -4,7 +4,7 @@ title: Layout
 ---
 
 > ##### Tip!
-> The starter page is a good place to start building your app if you'd like to start from scratch.
+> The [starter page](https://adminlte.io/themes/v3/starter.html) is a good place to start building your app if you'd like to start from scratch.
 {: .quote-info .mt-0}
 
 The layout consists of four major parts:
@@ -41,7 +41,9 @@ You can also use the following classes for responsive changes with placing
   - use the class `.layout-*-footer-not-fixed` to get a not fixed footer.
 
 > ##### Tip!
-> If you want to use anchors with a fixed navbar, you need to add `.anchor` to you hidden anchor, e.g. `<a id="testAnchor" class="anchor"></a>`.
+> If you want to use anchors with a fixed navbar, you need to add `.anchor` to you hidden anchor, e.g. `<a id="testAnchor" class="anchor"></a>`. 
+> 
+> To get a smooth scrolling to the anchor you need to add `.scroll-smooth` to your HTML tag like this `<html class="scroll-smooth">` otherwise it jumps directly to your anchor, `.scroll-smooth` can cause issues with a Chrome extension called ScrollAnywhere.
 {: .quote-info}
 
 

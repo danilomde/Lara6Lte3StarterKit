@@ -3,11 +3,11 @@
 namespace JeroenNoten\LaravelAdminLte\Console;
 
 use Illuminate\Console\Command;
-use JeroenNoten\LaravelAdminLte\Http\Helpers\CommandHelper;
+use JeroenNoten\LaravelAdminLte\Helpers\CommandHelper;
 
 class AdminLteStatusCommand extends Command
 {
-    protected $signature = 'adminlte:status'.
+    protected $signature = 'adminlte:status '.
         '{--include-images : Includes AdminLTE asset images to the checkup}';
 
     protected $description = 'Checks the install status for AdminLTE assets, routes & views.';
@@ -55,7 +55,7 @@ class AdminLteStatusCommand extends Command
         $bar->advance();
 
         // Checking Main Views
-        $table_content[] = ['main_views', 'Main Views', $this->resolveCompare($this->compareFolder('resources/views', 'resources/views', $package_path, base_path(), true)), 'false'];
+        $table_content[] = ['main_views', 'Main Views', $this->resolveCompare($this->compareFolder('resources/views', 'resources/views/vendor/adminlte/', $package_path, base_path(), true)), 'false'];
         $bar->advance();
 
         $bar->finish();
@@ -96,8 +96,24 @@ class AdminLteStatusCommand extends Command
         $asset = $install_command->getProtected('assets')[$asset_key];
         $assets_path = $install_command->getProtected('assets_path');
         $package_path = $install_command->getProtected('assets_package_path');
+        $compare = $compare_multiple = null;
 
-        $compare = $this->compareFolder($asset['package_path'], $asset['assets_path'], base_path($package_path), public_path($assets_path), $asset['recursive'] ?? true, $asset['ignore'] ?? [], $asset['ignore_ending'] ?? [], $asset['images'] ?? null, $asset['images_path'] ?? null);
+        if (is_array($asset['package_path'])) {
+            foreach ($asset['package_path'] as $key => $value) {
+                $compare_multiple += $this->compareFolder($asset['package_path'][$key], $asset['assets_path'][$key], base_path($package_path), public_path($assets_path), $asset['recursive'] ?? true, $asset['ignore'] ?? [], $asset['images'] ?? null, $asset['images_path'] ?? null);
+            }
+
+            $compare_multiple /= count($asset['package_path']);
+            if ($compare_multiple == 1) {
+                $compare = 1;
+            } elseif ($compare_multiple >= 1) {
+                $compare = 2;
+            } elseif ($compare_multiple <= 1) {
+                $compare = 0;
+            }
+        } else {
+            $compare = $this->compareFolder($asset['package_path'], $asset['assets_path'], base_path($package_path), public_path($assets_path), $asset['recursive'] ?? true, $asset['ignore'] ?? [], $asset['images'] ?? null, $asset['images_path'] ?? null);
+        }
 
         return $compare;
     }
@@ -111,12 +127,11 @@ class AdminLteStatusCommand extends Command
      * @param  $destination_base_path
      * @param  $recursive
      * @param  $ignore
-     * @param  $ignore_ending
      * @param  $images
      * @param  $images_path
      * @return int
      */
-    public function compareFolder($source_path, $destination_path, $source_base_path = null, $destination_base_path = null, $recursive = true, $ignore = [], $ignore_ending = [], $images = null, $images_path = null, $ignore_base_folder = null)
+    public function compareFolder($source_path, $destination_path, $source_base_path = null, $destination_base_path = null, $recursive = true, $ignore = [], $images = null, $images_path = null, $ignore_base_folder = null)
     {
         $dest_exist = true;
         $dest_missing = false;
@@ -144,7 +159,12 @@ class AdminLteStatusCommand extends Command
                     $dest_exist = false;
                     $dest_child_exist = false;
                 } else {
-                    $compare = CommandHelper::compareDirectories($source_base_path.$source_path[$key], $destination_base_path.$destination_child_path, '', $ignore, $ignore_ending, $recursive);
+                    $compare = CommandHelper::compareDirectories(
+                        $source_base_path.$source_path[$key],
+                        $destination_base_path.$destination_child_path,
+                        $recursive,
+                        $ignore
+                    );
 
                     if (! $dest_child_missmatch && $compare) {
                         $dest_child_missmatch = false;
@@ -157,7 +177,12 @@ class AdminLteStatusCommand extends Command
             if (! file_exists($destination_base_path.$destination_path)) {
                 $dest_exist = false;
             } else {
-                $compare = CommandHelper::compareDirectories($source_base_path.$source_path, $destination_base_path.$destination_path, '', $ignore, $ignore_ending, $recursive, null, true);
+                $compare = CommandHelper::compareDirectories(
+                    $source_base_path.$source_path,
+                    $destination_base_path.$destination_path,
+                    $recursive,
+                    $ignore
+                );
                 if ($compare === false) {
                     $dest_missmatch = true;
                 } elseif ($compare === null) {
@@ -235,9 +260,11 @@ class AdminLteStatusCommand extends Command
 
         foreach ($auth_views as $file_name => $file_content) {
             $file = $install_command->getViewPath($file_name);
-            $dest_file_content = file_get_contents($file);
-            if (strpos($dest_file_content, $file_content) !== false) {
-                $view_found++;
+            if (file_exists($file)) {
+                $dest_file_content = file_get_contents($file);
+                if (strpos($dest_file_content, $file_content) !== false) {
+                    $view_found++;
+                }
             }
         }
 
