@@ -2,9 +2,18 @@
 // Component: Cards
 //
 
+// Color variants
+@each $name, $color in $theme-colors {
+  @include cards-variant($name, $color);
+}
+
+@each $name, $color in $colors {
+  @include cards-variant($name, $color);
+}
+
 .card {
-  @extend .mb-3;
   @include box-shadow($card-shadow);
+  margin-bottom: map-get($spacers, 3);
 
   &.bg-dark {
     .card-header {
@@ -75,6 +84,113 @@
   .border-left {
     border-left: 1px solid $card-border-color;
   }
+
+  &.card-tabs {
+    &:not(.card-outline) {
+      & > .card-header {
+        border-bottom: 0;
+
+        .nav-item {
+          &:first-child .nav-link {
+            margin-left: -1px;
+          }
+        }
+      }
+    }
+
+    &.card-outline {
+      .nav-item {
+        border-bottom: 0;
+
+        &:first-child .nav-link {
+          border-left: 0;
+          margin-left: 0;
+        }
+      }
+    }
+
+    .card-tools {
+      margin: .3rem .5rem;
+    }
+
+    &:not(.expanding-card).collapsed-card {
+      .card-header {
+        border-bottom: 0;
+
+        .nav-tabs {
+          border-bottom: 0;
+
+          .nav-item {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+
+    &.expanding-card {
+      .card-header {
+        .nav-tabs {
+          .nav-item {
+            margin-bottom: -1px;
+          }
+        }
+      }
+    }
+  }
+
+  &.card-outline-tabs {
+    border-top: 0;
+
+    .card-header {
+      .nav-item {
+        &:first-child .nav-link {
+          border-left: 0;
+          margin-left: 0;
+        }
+      }
+
+      a {
+        border-top: 3px solid transparent;
+
+        &:hover {
+          border-top: 3px solid $nav-tabs-border-color;
+        }
+
+        &.active {
+          &:hover {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+
+    .card-tools {
+      margin: .5rem .5rem .3rem;
+    }
+
+    &:not(.expanding-card).collapsed-card .card-header {
+      border-bottom: 0;
+
+      .nav-tabs {
+        border-bottom: 0;
+
+        .nav-item {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    &.expanding-card {
+      .card-header {
+        .nav-tabs {
+          .nav-item {
+            margin-bottom: -1px;
+          }
+        }
+      }
+    }
+  }
+
 }
 
 // Maximized Card Body Scroll fix
@@ -158,7 +274,7 @@ html.maximized-card {
   }
 
   .nav-link {
-    padding: $card-nav-link-padding-sm-y $card-nav-link-padding-sm-x; 
+    padding: $card-nav-link-padding-sm-y $card-nav-link-padding-sm-x;
   }
 }
 
@@ -194,7 +310,7 @@ html.maximized-card {
 }
 
 .chart-legend {
-  @extend .list-unstyled;
+  @include list-unstyled;
   margin: 10px 0;
 
   > li {
@@ -223,7 +339,8 @@ html.maximized-card {
     }
 
     img {
-      @extend .img-sm;
+      height: $card-img-size;
+      width: $card-img-size;
       float: left;
     }
   }
@@ -346,16 +463,6 @@ html.maximized-card {
 .card-input {
   max-width: 200px;
 }
-
-// Color variants
-@each $name, $color in $theme-colors {
-  @include cards-variant($name, $color);
-}
-
-@each $name, $color in $colors {
-  @include cards-variant($name, $color);
-}
-
 
 // Nav Tabs override
 .card-default {
