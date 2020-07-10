@@ -14,7 +14,7 @@ class RoleTableSeeder extends Seeder
     {
        $roles = [
            'Admin',
-           'User'
+           'Franqueado'
         ];
 
 

@@ -15,13 +15,43 @@ class UserTableSeeder extends Seeder
 
     	DB::table('users')->insert([
             'name' => 'Admin',
-            'email' => 'admin@admin.com',
+            'email' => 'web@jumpercursos.com.br',
+            'password' => bcrypt('@pwd2000'),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'Gerencia',
+            'email' => 'gerente@jumpercursos.com.br',
             'password' => bcrypt('123456'),
         ]);
 
         DB::table('users')->insert([
-            'name' => 'User',
-            'email' => 'user@user.com',
+            'name' => 'Expansão',
+            'email' => 'expansao@jumpercursos.com.br',
+            'password' => bcrypt('123456'),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'Suporte',
+            'email' => 'suporte@jumpercursos.com.br',
+            'password' => bcrypt('123456'),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'Marketing',
+            'email' => 'marketing@jumpercursos.com.br',
+            'password' => bcrypt('123456'),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'Juridico',
+            'email' => 'juridico@jumpercursos.com.br',
+            'password' => bcrypt('123456'),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'Financeiro',
+            'email' => 'financeiro@jumpercursos.com.br',
             'password' => bcrypt('123456'),
         ]);
 
